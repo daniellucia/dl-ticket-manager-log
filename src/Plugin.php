@@ -160,7 +160,32 @@ class TMLogManagementPlugin
                 echo esc_html(get_post_meta($post_id, 'ticket_event', true));
                 break;
             case 'log_type':
-                echo esc_html(get_post_meta($post_id, 'log_type', true));
+
+                $type = esc_html(get_post_meta($post_id, 'log_type', true));
+                switch ($type) {
+                    case 'info':
+                        $color = '#2c76e6ff';
+                        $bg    = 'rgba(26, 28, 153, 0.15)';
+                        break;
+                    case 'success':
+                        $color = '#27ae60';
+                        $bg    = 'rgba(39,174,96,0.15)';
+                        break;
+                    case 'warning':
+                        $color = '#f1c40f';
+                        $bg    = 'rgba(241,196,15,0.15)';
+                        break;
+                    case 'error':
+                        $color = '#e74c3c';
+                        $bg    = 'rgba(231,76,60,0.15)';
+                        break;
+                    default:
+                        $color = '#cececeff';
+                        $bg    = 'rgba(104, 104, 104, 0.15)';
+                        break;
+                }
+
+                echo '<span style="font-size: 12px;color:' . esc_attr($color) . ';background:' . esc_attr($bg) . ';border:1px solid ' . esc_attr($color) . ';padding:1px 8px;border-radius:4px;font-weight:normal;display:inline-block;font-family: monospace;"">' . $type . '</span>';
                 break;
         }
     }

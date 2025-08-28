@@ -1,5 +1,7 @@
 <?php
 
+use DL\TicketManager\Order\Ticket;
+
 class TMLogManagementPlugin
 {
 
@@ -16,6 +18,7 @@ class TMLogManagementPlugin
 
         // Acciones
         add_action('dl_ticket_manager_ticket_created', [$this, 'logTicketCreated'], 10, 2);
+        add_action('dl_ticket_manager_ticket_status_changed', [$this, 'logTicketStatusChanged'], 10, 2);
     }
 
     /**
@@ -200,8 +203,24 @@ class TMLogManagementPlugin
             $ticket['name'],
             $ticket['event'],
             $ticket['code'],
-            __('Ticket creado correctamente.', 'dl-ticket-manager-log'),
+            __('Ticket successfully created.', 'dl-ticket-manager-log'),
             'success'
+        );
+    }
+
+    public function logTicketStatusChanged($ticket_id, $new_status)
+    {
+        $name = get_post_meta($ticket_id, 'name', true);
+        $event = get_post_meta($ticket_id, 'event', true);
+        $code = get_post_meta($ticket_id, 'code', true);
+
+        $this->insertLog(
+            $ticket_id,
+            $name,
+            $event,
+            $code,
+            sprintf(__('Ticket status changed to %s', 'dl-ticket-manager-log'), $new_status),
+            'info'
         );
     }
 

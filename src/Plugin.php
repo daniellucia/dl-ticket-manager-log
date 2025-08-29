@@ -191,6 +191,36 @@ class TMLogManagementPlugin
     }
 
     /**
+     * Obtiene un ticket por su ID
+     * @param mixed $ticket_id
+     * @return array{code: string, event: string, id: mixed, name: string}
+     * @author Daniel Lucia
+     */
+    private function getTicketById($ticket_id)
+    {
+
+        $ticket = [
+            'id'    => $ticket_id,
+            'code'  => '',
+            'name'  => '',
+            'event' => '',
+        ];
+
+        if ((int)$ticket_id > 0) {
+            $ticket = [
+                'id'    => $ticket_id,
+                'code'  => get_post_meta($ticket_id, 'code', true),
+                'name'  => get_post_meta($ticket_id, 'name', true),
+                'event' => get_post_meta($ticket_id, 'event', true),
+            ];
+
+            return $ticket;
+        }
+
+        return;
+    }
+
+    /**
      * Inserta un nuevo log para un ticket.
      * @param int $ticket_id
      * @param string $ticket_code
@@ -235,15 +265,13 @@ class TMLogManagementPlugin
 
     public function logTicketStatusChanged($ticket_id, $new_status)
     {
-        $name = get_post_meta($ticket_id, 'name', true);
-        $event = get_post_meta($ticket_id, 'event', true);
-        $code = get_post_meta($ticket_id, 'code', true);
+        $ticket = $this->getTicketById($ticket_id);
 
         $this->insertLog(
             $ticket_id,
-            $name,
-            $event,
-            $code,
+            $ticket['name'],
+            $ticket['event'],
+            $ticket['code'],
             sprintf(__('Ticket status changed to %s', 'dl-ticket-manager-log'), $new_status),
             'info'
         );

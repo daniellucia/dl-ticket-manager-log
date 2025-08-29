@@ -9,7 +9,7 @@ class TMLogManagementPlugin
         add_action('admin_menu', [$this, 'addSubmenu']);
         add_action('admin_head', [$this, 'hideAddNewButton']);
         add_action('admin_head', [$this, 'disableEditForLogs']);
-        
+
         $cpt = new TMLogCpt();
         add_action('init', [$cpt, 'register']);
         add_action('pre_get_posts', [$cpt, 'restrictCptToAdmins']);
@@ -30,6 +30,10 @@ class TMLogManagementPlugin
         add_action('dl_ticket_manager_ticket_created', [$hooks, 'ticketCreated'], 10, 2);
         add_action('dl_ticket_manager_ticket_status_changed', [$hooks, 'ticketStatusChanged'], 10, 2);
         add_action('dl_validation_event', [$hooks, 'validationEvent'], 10, 2);
+
+        //Configuración
+        $config = new TmLogConfig();
+        add_action('admin_init', [$config, 'registerSettings'], 40);
     }
 
 

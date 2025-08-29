@@ -5,15 +5,15 @@ class TMLogManagementPlugin
 
     public function init(): void
     {
-        $cpt = new TMLogCpt();
-        add_action('init', [$cpt, 'register']);
 
         add_action('admin_menu', [$this, 'addSubmenu']);
-        add_action('pre_get_posts', [$this, 'restrictCptToAdmins']);
         add_action('admin_head', [$this, 'hideAddNewButton']);
-
         add_action('admin_head', [$this, 'disableEditForLogs']);
-        add_action('pre_get_posts', [$this, 'filterSearchQuery']);
+        
+        $cpt = new TMLogCpt();
+        add_action('init', [$cpt, 'register']);
+        add_action('pre_get_posts', [$cpt, 'restrictCptToAdmins']);
+        add_action('pre_get_posts', [$cpt, 'filterSearchQuery']);
 
         //Columnas
         $columns = new TMLogColumns();
@@ -49,22 +49,6 @@ class TMLogManagementPlugin
         );
     }
 
-    /**
-     * Restricción del CPT a los administradores
-     * @param mixed $query
-     * @return void
-     * @author Daniel Lucia
-     */
-    public function restrictCptToAdmins($query)
-    {
-        if (
-            is_admin() &&
-            $query->get('post_type') === 'dl-tickets-log' &&
-            !current_user_can('manage_options')
-        ) {
-            $query->set('post_type', 'none');
-        }
-    }
 
     /**
      * Ocultamos el botón de añadir nuevo
@@ -110,41 +94,4 @@ class TMLogManagementPlugin
         }
     }
 
-    /**
-     * Permite buscar por ticket_code, ticket_name o ticket_event en el listado
-     * @param mixed $query
-     * @return void
-     * @author Daniel Lucia
-     */
-    public function filterSearchQuery($query)
-    {
-        if (
-            is_admin() &&
-            $query->is_main_query() &&
-            $query->get('post_type') === 'dl-tickets-log' &&
-            !empty($query->get('s'))
-        ) {
-            $search = $query->get('s');
-            $meta_query = [
-                'relation' => 'OR',
-                [
-                    'key'     => 'ticket_code',
-                    'value'   => $search,
-                    'compare' => 'LIKE',
-                ],
-                [
-                    'key'     => 'ticket_name',
-                    'value'   => $search,
-                    'compare' => 'LIKE',
-                ],
-                [
-                    'key'     => 'ticket_event',
-                    'value'   => $search,
-                    'compare' => 'LIKE',
-                ],
-            ];
-            $query->set('meta_query', $meta_query);
-            $query->set('s', ''); // Evita que WP busque por título
-        }
-    }
 }

@@ -217,7 +217,7 @@ class TMLogManagementPlugin
             return $ticket;
         }
 
-        return;
+        return $ticket;
     }
 
     /**

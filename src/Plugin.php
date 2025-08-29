@@ -263,6 +263,13 @@ class TMLogManagementPlugin
         );
     }
 
+    /**
+     * Registra un cambio de estado en un ticket
+     * @param mixed $ticket_id
+     * @param mixed $new_status
+     * @return void
+     * @author Daniel Lucia
+     */
     public function logTicketStatusChanged($ticket_id, $new_status)
     {
         $ticket = $this->getTicketById($ticket_id);

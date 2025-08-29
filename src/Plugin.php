@@ -213,8 +213,6 @@ class TMLogManagementPlugin
                 'name'  => get_post_meta($ticket_id, 'name', true),
                 'event' => get_post_meta($ticket_id, 'event', true),
             ];
-
-            return $ticket;
         }
 
         return $ticket;

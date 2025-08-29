@@ -151,6 +151,7 @@ class TMLogManagementPlugin
         if ($screen && $screen->post_type === 'dl-tickets-log') {
             echo '<style>
                 .page-title-action, #favorite-actions { display: none !important; }
+                .tablenav.top, .subsubsub { display: none !important; }
             </style>';
         }
     }

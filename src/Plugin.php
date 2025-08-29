@@ -435,7 +435,9 @@ class TMLogManagementPlugin
     }
 
     /**
-     * Añade estilos CSS para cambiar el ancho de las columnas del listado del CPT dl-tickets-log
+     * Añade estilos CSS para cambiar el ancho de las columnas
+     * @return void
+     * @author Daniel Lucia
      */
     public function customColumnStyles()
     {

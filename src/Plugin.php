@@ -113,6 +113,7 @@ class TMLogManagementPlugin
             'ticket_code' => __('Ticket Code', 'dl-ticket-manager-log'),
             'ticket_name' => __('Customer name', 'dl-ticket-manager-log'),
             'ticket_event' => __('Event', 'dl-ticket-manager-log'),
+            'user_ip'     => __('User IP', 'dl-ticket-manager-log'),
             'log_type'    => __('Log Type', 'dl-ticket-manager-log'),
         ];
 
@@ -159,6 +160,11 @@ class TMLogManagementPlugin
                 break;
             case 'ticket_event':
                 echo esc_html(get_post_meta($post_id, 'ticket_event', true));
+                break;
+            case 'user_ip':
+                echo '<pre style="margin: 0; font-size: 12px;">';
+                    echo esc_html(get_post_meta($post_id, 'user_ip', true));
+                echo '</pre>';
                 break;
             case 'log_type':
 
@@ -229,6 +235,9 @@ class TMLogManagementPlugin
      */
     private function insertLog($ticket_id, $customer_name, $event,  $ticket_code, $text, $type = 'info')
     {
+        
+        $user_ip = $_SERVER['REMOTE_ADDR'];
+
         $log = [
             'post_type'    => 'dl-tickets-log',
             'post_title'   => $text,
@@ -237,6 +246,7 @@ class TMLogManagementPlugin
                 'ticket_code'   => $ticket_code,
                 'ticket_name'   => $customer_name,
                 'ticket_event'   => $event,
+                'user_ip'   => $user_ip,
                 'ticket_id' => $ticket_id,
                 'log_type'    => $type,
             ],

@@ -14,7 +14,8 @@ class TMLogManagementPlugin
         add_filter('manage_dl-tickets-log_posts_columns', [$this, 'addCustomColumns']);
         add_action('manage_dl-tickets-log_posts_custom_column', [$this, 'renderCustomColumns'], 10, 2);
         add_action('admin_head', [$this, 'disableEditForLogs']);
-        add_action('pre_get_posts', [$this, 'filterSearchQuery']); // <-- Añade este hook
+        add_action('pre_get_posts', [$this, 'filterSearchQuery']); 
+        add_action('admin_head', [$this, 'customColumnStyles']);
 
         // Acciones
         add_action('dl_ticket_manager_ticket_created', [$this, 'logTicketCreated'], 10, 2);
@@ -376,6 +377,25 @@ class TMLogManagementPlugin
             ];
             $query->set('meta_query', $meta_query);
             $query->set('s', ''); // Evita que WP busque por título
+        }
+    }
+
+    /**
+     * Añade estilos CSS para cambiar el ancho de las columnas del listado del CPT dl-tickets-log
+     */
+    public function customColumnStyles()
+    {
+        $screen = get_current_screen();
+        if ($screen && $screen->post_type === 'dl-tickets-log') {
+            echo '<style>
+                .wp-list-table th.column-ticket_id { width: 5%; }
+                .wp-list-table th.column-ticket_code { width: 8%; }
+                .wp-list-table th.column-ticket_name { width: 12%; }
+                .wp-list-table th.column-ticket_event { width: 14%; }
+                .wp-list-table th.column-user_ip { width: 4%; }
+                .wp-list-table th.column-log_type { width: 4%; }
+                .wp-list-table th.column-date { width: 10%; }
+            </style>';
         }
     }
 }

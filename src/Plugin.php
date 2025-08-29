@@ -1,7 +1,5 @@
 <?php
 
-use DL\TicketManager\Order\Ticket;
-
 class TMLogManagementPlugin
 {
 

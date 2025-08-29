@@ -34,6 +34,7 @@ class TMLogManagementPlugin
         //Configuración
         $config = new TmLogConfig();
         add_action('admin_init', [$config, 'registerSettings'], 40);
+        add_action('init', [$config, 'maybeDeleteOldLogs'], 40);
     }
 
 

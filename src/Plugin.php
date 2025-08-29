@@ -279,7 +279,7 @@ class TMLogManagementPlugin
             $ticket['event'],
             $ticket['code'],
             sprintf(__('Ticket status changed to %s', 'dl-ticket-manager-log'), $new_status),
-            'info'
+            'success'
         );
     }
 

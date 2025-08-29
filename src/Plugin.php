@@ -22,8 +22,8 @@ class TMLogManagementPlugin
         add_action('manage_dl-ticket_posts_custom_column', [$this, 'renderCustomColumnsTickets'], 10, 2);
 
         // Acciones
-        add_action('dl_ticket_manager_ticket_created', [$this, 'logTicketCreated'], 10, 2);
-        add_action('dl_ticket_manager_ticket_status_changed', [$this, 'logTicketStatusChanged'], 10, 2);
+        add_action('dl_ticket_manager_ticket_created', [$this, 'ticketCreated'], 10, 2);
+        add_action('dl_ticket_manager_ticket_status_changed', [$this, 'ticketStatusChanged'], 10, 2);
         add_action('dl_validation_event', [$this, 'validationEvent'], 10, 2);
     }
 
@@ -315,7 +315,7 @@ class TMLogManagementPlugin
      * @param int $ticket_id
      * @param string $ticket_code
      */
-    public function logTicketCreated($ticket_id, $ticket)
+    public function ticketCreated($ticket_id, $ticket)
     {
         $this->insertLog(
             $ticket_id,
@@ -334,7 +334,7 @@ class TMLogManagementPlugin
      * @return void
      * @author Daniel Lucia
      */
-    public function logTicketStatusChanged($ticket_id, $new_status)
+    public function ticketStatusChanged($ticket_id, $new_status)
     {
         $ticket = $this->getTicketById($ticket_id);
 
@@ -353,7 +353,7 @@ class TMLogManagementPlugin
 
         //Si el ticket es confirmado, lanzamos el evento para cambiar el estado
         if ($type == 'ticket_confirmed') {
-            return $this->logTicketStatusChanged($ticket_data['id'], 'confirmed');
+            return $this->ticketStatusChanged($ticket_data['id'], 'confirmed');
         }
 
         $ticket = $this->getTicketById((int)$ticket_data['id']);

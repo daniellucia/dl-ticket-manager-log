@@ -19,6 +19,7 @@ class TMLogManagementPlugin
         // Acciones
         add_action('dl_ticket_manager_ticket_created', [$this, 'logTicketCreated'], 10, 2);
         add_action('dl_ticket_manager_ticket_status_changed', [$this, 'logTicketStatusChanged'], 10, 2);
+        add_action('dl_validation_event', [$this, 'validationEvent'], 10, 2);
     }
 
     /**
@@ -280,6 +281,27 @@ class TMLogManagementPlugin
             sprintf(__('Ticket status changed to %s', 'dl-ticket-manager-log'), $new_status),
             'info'
         );
+    }
+
+    public function validationEvent($type, $data, $order_id, $ticket_data, $response) {
+
+        //Si el ticket es confirmado, lanzamos el evento para cambiar el estado
+        if ($type == 'ticket_confirmed') {
+            return $this->logTicketStatusChanged($ticket_data['id'], 'confirmed');
+        }
+
+        $ticket = $this->getTicketById((int)$ticket_data['id']);
+        $text = $response['message'] ?? '';
+        
+        $this->insertLog(
+            (int)$ticket_data['id'],
+            $ticket['name'],
+            $ticket['event'],
+            $ticket['code'],
+            $text,
+            'error'
+        );
+
     }
 
     /**

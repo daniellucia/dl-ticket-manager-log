@@ -13,6 +13,9 @@
 defined('ABSPATH') || exit;
 
 require_once __DIR__ . '/src/Plugin.php';
+require_once __DIR__ . '/src/Hooks.php';
+require_once __DIR__ . '/src/Columns.php';
+require_once __DIR__ . '/src/Cpt.php';
 
 add_action('plugins_loaded', function () {
 

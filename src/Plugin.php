@@ -14,13 +14,67 @@ class TMLogManagementPlugin
         add_filter('manage_dl-tickets-log_posts_columns', [$this, 'addCustomColumns']);
         add_action('manage_dl-tickets-log_posts_custom_column', [$this, 'renderCustomColumns'], 10, 2);
         add_action('admin_head', [$this, 'disableEditForLogs']);
-        add_action('pre_get_posts', [$this, 'filterSearchQuery']); 
+        add_action('pre_get_posts', [$this, 'filterSearchQuery']);
         add_action('admin_head', [$this, 'customColumnStyles']);
+
+        //Columna en la lista de tickets
+        add_filter('manage_dl-ticket_posts_columns', [$this, 'addCustomColumnsTickets']);
+        add_action('manage_dl-ticket_posts_custom_column', [$this, 'renderCustomColumnsTickets'], 10, 2);
 
         // Acciones
         add_action('dl_ticket_manager_ticket_created', [$this, 'logTicketCreated'], 10, 2);
         add_action('dl_ticket_manager_ticket_status_changed', [$this, 'logTicketStatusChanged'], 10, 2);
         add_action('dl_validation_event', [$this, 'validationEvent'], 10, 2);
+    }
+
+    /**
+     * Añadimos columnas personalizadas a la lista de tickets
+     * @param mixed $columns
+     * @author Daniel Lucia
+     */
+    public function addCustomColumnsTickets($columns)
+    {
+        $columns['log'] = __('Log', 'dl-ticket-manager');
+
+        return $columns;
+    }
+
+    /**
+     * Renderizamos las columnas personalizadas en la lista de tickets
+     * @param mixed $column
+     * @param mixed $post_id
+     * @return void
+     * @author Daniel Lucia
+     */
+    function renderCustomColumnsTickets($column, $post_id)
+    {
+        switch ($column) {
+            case 'log':
+                $url = $this->getLogSearchUrl(get_post_meta($post_id, 'code', true));
+                echo '<a href="' . esc_url($url) . '">' . __('View log', 'dl-ticket-manager-log') . '</a>';
+                break;
+        }
+    }
+
+    /**
+     * Obtiene la URL de búsqueda de logs para un ticket específico
+     * @param mixed $ticket_code
+     * @return string
+     * @author Daniel Lucia
+     */
+    private function getLogSearchUrl($ticket_code)
+    {
+        $base_url = admin_url('edit.php');
+        $args = [
+            's'           => $ticket_code,
+            'post_status' => 'all',
+            'post_type'   => 'dl-tickets-log',
+            'action'      => '-1',
+            'm'           => '0',
+            'paged'       => '1',
+            'action2'     => '-1',
+        ];
+        return add_query_arg($args, $base_url);
     }
 
     /**
@@ -164,7 +218,7 @@ class TMLogManagementPlugin
                 break;
             case 'user_ip':
                 echo '<pre style="margin: 0; font-size: 12px;">';
-                    echo esc_html(get_post_meta($post_id, 'user_ip', true));
+                echo esc_html(get_post_meta($post_id, 'user_ip', true));
                 echo '</pre>';
                 break;
             case 'log_type':
@@ -236,7 +290,7 @@ class TMLogManagementPlugin
      */
     private function insertLog($ticket_id, $customer_name, $event,  $ticket_code, $text, $type = 'info')
     {
-        
+
         $user_ip = $_SERVER['REMOTE_ADDR'];
 
         $log = [
@@ -294,7 +348,8 @@ class TMLogManagementPlugin
         );
     }
 
-    public function validationEvent($type, $data, $order_id, $ticket_data, $response) {
+    public function validationEvent($type, $data, $order_id, $ticket_data, $response)
+    {
 
         //Si el ticket es confirmado, lanzamos el evento para cambiar el estado
         if ($type == 'ticket_confirmed') {
@@ -303,7 +358,7 @@ class TMLogManagementPlugin
 
         $ticket = $this->getTicketById((int)$ticket_data['id']);
         $text = $response['message'] ?? '';
-        
+
         $this->insertLog(
             (int)$ticket_data['id'],
             $ticket['name'],
@@ -312,7 +367,6 @@ class TMLogManagementPlugin
             $text,
             'error'
         );
-
     }
 
     /**
@@ -395,6 +449,12 @@ class TMLogManagementPlugin
                 .wp-list-table th.column-user_ip { width: 4%; }
                 .wp-list-table th.column-log_type { width: 4%; }
                 .wp-list-table th.column-date { width: 10%; }
+            </style>';
+        }
+
+        if ($screen && $screen->post_type === 'dl-ticket') {
+            echo '<style>
+                .wp-list-table th.column-log { width: 80px; }
             </style>';
         }
     }

@@ -1,8 +1,10 @@
 <?php
 
+namespace DL\TicketsLog;
+
 defined('ABSPATH') || exit;
 
-class TMLogManagementPlugin
+class Plugin
 {
 
     public function init(): void
@@ -12,13 +14,13 @@ class TMLogManagementPlugin
         add_action('admin_head', [$this, 'hideAddNewButton']);
         add_action('admin_head', [$this, 'disableEditForLogs']);
 
-        $cpt = new TMLogCpt();
+        $cpt = new Cpt();
         add_action('init', [$cpt, 'register']);
         add_action('pre_get_posts', [$cpt, 'restrictCptToAdmins']);
         add_action('pre_get_posts', [$cpt, 'filterSearchQuery']);
 
         //Columnas
-        $columns = new TMLogColumns();
+        $columns = new Columns();
         add_filter('manage_dl-tickets-log_posts_columns', [$columns, 'addCustomColumns']);
         add_action('manage_dl-tickets-log_posts_custom_column', [$columns, 'renderCustomColumns'], 10, 2);
         add_action('admin_head', [$columns, 'customColumnStyles']);
@@ -28,13 +30,13 @@ class TMLogManagementPlugin
         add_action('manage_dl-ticket_posts_custom_column', [$columns, 'renderCustomColumnsTickets'], 10, 2);
 
         // Acciones
-        $hooks = new TMLogHooks();
+        $hooks = new Hooks();
         add_action('dl_ticket_manager_ticket_created', [$hooks, 'ticketCreated'], 10, 2);
         add_action('dl_ticket_manager_ticket_status_changed', [$hooks, 'ticketStatusChanged'], 10, 2);
         add_action('dl_validation_event', [$hooks, 'validationEvent'], 10, 2);
 
         //Configuración
-        $config = new TmLogConfig();
+        $config = new Config();
         add_action('admin_init', [$config, 'registerSettings'], 40);
         add_action('init', [$config, 'maybeDeleteOldLogs'], 40);
     }

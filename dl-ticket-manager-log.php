@@ -10,18 +10,15 @@
  * Requires Plugins: dl-ticket-manager
  */
 
+use DL\TicketsLog\Plugin;
+
 defined('ABSPATH') || exit;
 
-require_once __DIR__ . '/src/Plugin.php';
-require_once __DIR__ . '/src/Hooks.php';
-require_once __DIR__ . '/src/Columns.php';
-require_once __DIR__ . '/src/Cpt.php';
-require_once __DIR__ . '/src/Config.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 add_action('plugins_loaded', function () {
 
     load_plugin_textdomain('dl-ticket-manager-log', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
-    $plugin = new TMLogManagementPlugin();
-    $plugin->init();
+    (new Plugin())->init();
 });

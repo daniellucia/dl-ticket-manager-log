@@ -1,8 +1,10 @@
 <?php
 
+namespace Dl\TicketsLog;
+
 defined('ABSPATH') || exit;
 
-class TmLogConfig
+class Config
 {
 
     /**

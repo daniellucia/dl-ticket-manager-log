@@ -20,5 +20,6 @@ add_action('plugins_loaded', function () {
 
     load_plugin_textdomain('dl-ticket-manager-log', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
-    (new Plugin())->init();
+    $plugin = new Plugin();
+    $plugin->init();
 });

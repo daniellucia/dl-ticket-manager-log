@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: Logging for Ticket Manager
- * Description: Gestión de log para el gestor de tickets.
+ * Description: Log management for the ticket manager.
  * Version: 0.0.2
  * Author: Daniel Lúcia
  * Author URI: http://www.daniellucia.es

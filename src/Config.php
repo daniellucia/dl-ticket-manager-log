@@ -32,8 +32,10 @@ class Config
     public function renderLogRetentionField()
     {
         $value = get_option('dl_ticket_manager_log_retention', 8);
-        echo '<input type="number" name="dl_ticket_manager_log_retention" value="' . esc_attr($value) . '" min="1" style="width:80px;" /> ';
+        echo '<div style="display: flex; flex-direction: column; gap: 4px;">';
+        echo '<input type="number" name="dl_ticket_manager_log_retention" value="' . esc_attr($value) . '" min="1" /> ';
         echo __('Number of months to keep logs (default: 8)', 'dl-ticket-manager-log');
+        echo '</div>';
     }
 
     /**
